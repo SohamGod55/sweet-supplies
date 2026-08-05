@@ -190,7 +190,7 @@ function DailyPurchase() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Share via</h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="mt-3 grid grid-cols-3 gap-3">
           <button
             onClick={() => share("wa")}
             disabled={rows.length === 0}
@@ -204,6 +204,13 @@ function DailyPurchase() {
             className="rounded-xl border border-primary px-4 py-3 font-semibold text-primary disabled:opacity-40"
           >
             SMS
+          </button>
+          <button
+            onClick={copyMessage}
+            disabled={rows.length === 0}
+            className="rounded-xl bg-secondary px-4 py-3 font-semibold text-secondary-foreground disabled:opacity-40"
+          >
+            {copied ? "Copied!" : "Copy"}
           </button>
         </div>
         {rows.length > 0 && (
