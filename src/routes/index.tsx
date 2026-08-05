@@ -34,6 +34,7 @@ const today = () => new Date().toLocaleDateString("en-CA");
 function DailyPurchase() {
   const [date, setDate] = useState(today);
   const [rows, setRows] = useState<Row[]>([]);
+  const [copied, setCopied] = useState(false);
 
   const [item, setItem] = useState<string>(ITEMS[0]!);
   const [customItem, setCustomItem] = useState("");
@@ -54,6 +55,30 @@ function DailyPurchase() {
     setQty("");
     setCustomItem("");
     setItem(ITEMS[0]!);
+  };
+
+  const copyMessage = async () => {
+    if (!rows.length) return;
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Fallback for browsers that block clipboard access
+      const textarea = document.createElement("textarea");
+      textarea.value = message;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
   };
 
   const message =
