@@ -35,10 +35,10 @@ function DailyPurchase() {
   const [date, setDate] = useState(today);
   const [rows, setRows] = useState<Row[]>([]);
 
-  const [item, setItem] = useState(ITEMS[0]);
+  const [item, setItem] = useState<string>(ITEMS[0]!);
   const [customItem, setCustomItem] = useState("");
   const [qty, setQty] = useState("");
-  const [unit, setUnit] = useState(UNITS[0]);
+  const [unit, setUnit] = useState<string>(UNITS[0]!);
   const [customUnit, setCustomUnit] = useState("");
 
   const resolvedItem = (item === OTHER ? customItem : item).trim().slice(0, 60);
@@ -53,7 +53,7 @@ function DailyPurchase() {
     ]);
     setQty("");
     setCustomItem("");
-    setItem(ITEMS[0]);
+    setItem(ITEMS[0]!);
   };
 
   const message =
