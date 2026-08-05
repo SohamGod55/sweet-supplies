@@ -34,6 +34,7 @@ const today = () => new Date().toLocaleDateString("en-CA");
 function DailyPurchase() {
   const [date, setDate] = useState(today);
   const [rows, setRows] = useState<Row[]>([]);
+  const [copied, setCopied] = useState(false);
 
   const [item, setItem] = useState<string>(ITEMS[0]!);
   const [customItem, setCustomItem] = useState("");
@@ -54,6 +55,30 @@ function DailyPurchase() {
     setQty("");
     setCustomItem("");
     setItem(ITEMS[0]!);
+  };
+
+  const copyMessage = async () => {
+    if (!rows.length) return;
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Fallback for browsers that block clipboard access
+      const textarea = document.createElement("textarea");
+      textarea.value = message;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
   };
 
   const message =
@@ -190,7 +215,7 @@ function DailyPurchase() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Share via</h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="mt-3 grid grid-cols-3 gap-3">
           <button
             onClick={() => share("wa")}
             disabled={rows.length === 0}
@@ -204,6 +229,13 @@ function DailyPurchase() {
             className="rounded-xl border border-primary px-4 py-3 font-semibold text-primary disabled:opacity-40"
           >
             SMS
+          </button>
+          <button
+            onClick={copyMessage}
+            disabled={rows.length === 0}
+            className="rounded-xl bg-secondary px-4 py-3 font-semibold text-secondary-foreground disabled:opacity-40"
+          >
+            {copied ? "Copied!" : "Copy"}
           </button>
         </div>
         {rows.length > 0 && (
